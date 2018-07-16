@@ -47,7 +47,7 @@ public class SudokuPresenter {
             gridBean.setSource(value);
             mGridBeans[i] = gridBean;
         }
-        updateTips();
+//        updateTips();
     }
 
     public GridBean getGrid(int i) {
