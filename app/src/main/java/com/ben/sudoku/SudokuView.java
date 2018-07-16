@@ -46,6 +46,7 @@ public class SudokuView extends View {
         mSourcePaint.setAntiAlias(true);
         mSourcePaint.setTextAlign(Paint.Align.CENTER);
 
+        mInputPaint.setAntiAlias(true);
         mInputPaint.setTextAlign(Paint.Align.CENTER);
         mInputPaint.setColor(getResources().getColor(R.color.colorPrimary));
 
@@ -66,6 +67,7 @@ public class SudokuView extends View {
         mPanelMarginTop = (h - w) / 2 + mPanelMarginLeft;
         mTextSize = mRectSize - rectPadding * 2;
         mSourcePaint.setTextSize(mTextSize);
+        mInputPaint.setTextSize(mTextSize);
 
         Paint.FontMetricsInt fontMetrics = mSourcePaint.getFontMetricsInt();
         mTextBaseline = (mRectSize - fontMetrics.bottom + fontMetrics.top) / 2 - fontMetrics.top;
@@ -146,6 +148,7 @@ public class SudokuView extends View {
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         mSudokuPresenter.updateTips();
+        postInvalidate();
         return super.onTouchEvent(event);
     }
 }

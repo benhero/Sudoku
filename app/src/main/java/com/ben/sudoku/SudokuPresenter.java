@@ -10,34 +10,34 @@ public class SudokuPresenter {
     public static final int GRID_COUNT = 81;
 
     private int[] mData = new int[]{
-            1, 2, 3, 9, 5, 6, 8, 7, 4,
-            7, 4, 8, 2, 1, 3, 6, 5, 9,
-            6, 5, 9, 8, 7, 4, 3, 1, 2,
+            1, 0, 3, 0, 5, 0, 8, 0, 4,
+            0, 0, 0, 2, 0, 0, 6, 0, 0,
+            6, 5, 0, 8, 0, 4, 0, 0, 2,
 
-            8, 1, 0, 4, 2, 5, 9, 3, 7,
-            9, 7, 4, 3, 8, 1, 5, 2, 6,
-            5, 3, 2, 6, 9, 7, 1, 4, 8,
+            8, 1, 0, 4, 0, 0, 9, 3, 0,
+            0, 0, 4, 0, 0, 1, 5, 0, 0,
+            0, 0, 2, 6, 0, 0, 1, 0, 8,
 
-            4, 0, 1, 7, 3, 0, 0, 6, 5,
-            3, 8, 7, 5, 0, 2, 4, 9, 1,
-            2, 6, 0, 1, 4, 9, 7, 8, 0
+            4, 0, 1, 7, 0, 0, 0, 6, 5,
+            0, 8, 0, 0, 0, 2, 0, 0, 1,
+            2, 6, 0, 1, 0, 0, 0, 8, 0
     };
 
     private GridBean[] mGridBeans = new GridBean[9 * 9];
 
-    //    private int[] mData = new int[]{
-//            1, 2, 3, 4, 5, 6, 7, 8, 9,
-//            1, 4, 3, 4, 5, 6, 7, 8, 9,
-//            1, 2, 3, 4, 5, 6, 7, 8, 9,
-//
-//            2, 1, 3, 5, 7, 5, 9, 6, 4,
-//            2, 1, 3, 6, 7, 8, 9, 6, 4,
-//            2, 1, 3, 5, 7, 8, 9, 6, 4,
-//
-//            1, 1, 1, 4, 5, 1, 8, 9, 3,
-//            7, 1, 2, 4, 5, 6, 8, 9, 3,
-//            7, 1, 2, 4, 5, 6, 8, 9, 3,
-//    };
+    private int[] mData2 = new int[]{
+            0, 0, 1, 5, 0, 0, 0, 0, 3,
+            0, 0, 5, 0, 0, 0, 6, 0, 0,
+            0, 0, 0, 0, 9, 6, 7, 0, 0,
+
+            6, 0, 0, 4, 0, 0, 1, 9, 0,
+            1, 2, 0, 0, 3, 0, 0, 6, 7,
+            0, 0, 0, 0, 0, 0, 0, 0, 0,
+
+            0, 9, 0, 0, 0, 0, 0, 0, 0,
+            4, 0, 6, 9, 0, 2, 0, 0, 0,
+            7, 0, 0, 0, 0, 0, 0, 3, 0
+    };
 
 
     public SudokuPresenter() {
@@ -59,12 +59,13 @@ public class SudokuPresenter {
     public void updateTips() {
         for (int i = 0; i < GRID_COUNT; i++) {
             GridBean gridBean = mGridBeans[i];
-            if (gridBean.getSource() == 0) {
+            if (getGridValue(i) == 0) {
                 int x = getXByDataIndex(i);
                 int y = getYByDataIndex(i);
                 updateTipsByRect(gridBean, x, y);
                 updateTipsByRow(gridBean, x, y);
                 updateTipsByColumn(gridBean, x, y);
+                updateInput(gridBean);
             }
         }
     }
@@ -117,6 +118,16 @@ public class SudokuPresenter {
         gridBean.updateTipsCount();
     }
 
+    private void updateInput(GridBean gridBean) {
+        if (gridBean.getTipsCount() == 1) {
+            int input = 0;
+            for (int i : gridBean.getTips()) {
+                input = i != 0 ? i : input;
+            }
+            gridBean.setInput(input);
+        }
+    }
+
     // ***************************************** 检测提示 *******************************************//
 
     /**
@@ -126,7 +137,7 @@ public class SudokuPresenter {
         int first = getDateIndex(x, 0);
         int count = 0;
         for (int i = 0; i < 9; i++) {
-            count += mData[first + i * 9] == num ? 1 : 0;
+            count += getGridValue(first + i * 9) == num ? 1 : 0;
             if (count > 1) {
                 return false;
             }
@@ -141,7 +152,7 @@ public class SudokuPresenter {
         int first = getDateIndex(x, 0);
         int count = 0;
         for (int i = 0; i < 9; i++) {
-            count += mData[first + i * 9] == num ? 1 : 0;
+            count += getGridValue(first + i * 9) == num ? 1 : 0;
         }
         return count;
     }
@@ -153,7 +164,7 @@ public class SudokuPresenter {
         int first = getDateIndex(0, y);
         int count = 0;
         for (int i = 0; i < 9; i++) {
-            count += mData[first * 9 + i] == num ? 1 : 0;
+            count += getGridValue(first * 9 + i) == num ? 1 : 0;
             if (count > 1) {
                 return false;
             }
@@ -168,7 +179,7 @@ public class SudokuPresenter {
         int first = getDateIndex(0, y);
         int count = 0;
         for (int i = 0; i < 9; i++) {
-            count += mData[first + i] == num ? 1 : 0;
+            count += getGridValue(first + i) == num ? 1 : 0;
         }
         return count;
     }
@@ -219,9 +230,9 @@ public class SudokuPresenter {
         int startItemY = rectIndex / 3 * 3;
         int i = startItemX + startItemY * 9;
         return new int[]{
-                mData[i], mData[i + 1], mData[i + 2],
-                mData[i + 9], mData[i + 10], mData[i + 11],
-                mData[i + 18], mData[i + 19], mData[i + 20]
+                getGridValue(i), getGridValue(i + 1), getGridValue(i + 2),
+                getGridValue(i + 9), getGridValue(i + 10), getGridValue(i + 11),
+                getGridValue(i + 18), getGridValue(i + 19), getGridValue(i + 20)
         };
     }
 
@@ -250,5 +261,10 @@ public class SudokuPresenter {
 
     public int getYByDataIndex(int index) {
         return index / 9;
+    }
+
+    private int getGridValue(int index) {
+        GridBean bean = mGridBeans[index];
+        return bean.getSource() != 0 ? bean.getSource() : bean.getInput();
     }
 }
