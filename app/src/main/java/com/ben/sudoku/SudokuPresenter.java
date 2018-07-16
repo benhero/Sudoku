@@ -12,9 +12,9 @@ public class SudokuPresenter {
     private int[] mData = new int[]{
             1, 0, 3, 0, 5, 0, 8, 0, 4,
             0, 0, 0, 2, 0, 0, 6, 0, 0,
-            6, 5, 0, 8, 0, 4, 0, 0, 2,
+            0, 5, 0, 8, 0, 4, 0, 0, 2,
 
-            8, 1, 0, 4, 0, 0, 9, 3, 0,
+            0, 1, 0, 4, 0, 0, 9, 3, 0,
             0, 0, 4, 0, 0, 1, 5, 0, 0,
             0, 0, 2, 6, 0, 0, 1, 0, 8,
 
@@ -47,7 +47,6 @@ public class SudokuPresenter {
             gridBean.setSource(value);
             mGridBeans[i] = gridBean;
         }
-//        updateTips();
     }
 
     public GridBean getGrid(int i) {
@@ -55,6 +54,22 @@ public class SudokuPresenter {
     }
 
     // ***************************************** 设置提示 *******************************************//
+
+    /**
+     * 检测输入的值
+     */
+    public boolean checkInput() {
+        for (int i = 0; i < GRID_COUNT; i++) {
+            int x = getXByDataIndex(i);
+            int y = getYByDataIndex(i);
+            int gridValue = getGridValue(i);
+
+            if (!checkColumn(x, y, gridValue) || !checkRow(x, y, gridValue) || !checkRect(x, y, gridValue)) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     public void updateTips() {
         for (int i = 0; i < GRID_COUNT; i++) {
@@ -131,7 +146,7 @@ public class SudokuPresenter {
     // ***************************************** 检测提示 *******************************************//
 
     /**
-     * 检查指定位置所在的行，某个数字的个数
+     * 检查指定位置所在的列，某个数字的个数
      */
     public boolean checkColumn(int x, int y, int num) {
         int first = getDateIndex(x, 0);
@@ -146,7 +161,7 @@ public class SudokuPresenter {
     }
 
     /**
-     * 检查指定位置所在的行，某个数字的个数
+     * 检查指定位置所在的列，某个数字的个数
      */
     public int getNumCountInColumn(int x, int y, int num) {
         int first = getDateIndex(x, 0);
@@ -164,7 +179,7 @@ public class SudokuPresenter {
         int first = getDateIndex(0, y);
         int count = 0;
         for (int i = 0; i < 9; i++) {
-            count += getGridValue(first * 9 + i) == num ? 1 : 0;
+            count += getGridValue(first + i) == num ? 1 : 0;
             if (count > 1) {
                 return false;
             }
@@ -266,5 +281,13 @@ public class SudokuPresenter {
     private int getGridValue(int index) {
         GridBean bean = mGridBeans[index];
         return bean.getSource() != 0 ? bean.getSource() : bean.getInput();
+    }
+
+    public void reset() {
+        for (int i = 0; i < GRID_COUNT; i++) {
+            GridBean gridBean = mGridBeans[i];
+            gridBean.setInput(0);
+            gridBean.clearTips();
+        }
     }
 }

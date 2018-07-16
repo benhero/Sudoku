@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 /**
  * 数独视图
@@ -147,7 +148,14 @@ public class SudokuView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        mSudokuPresenter.updateTips();
+        if (mSudokuPresenter.checkInput()) {
+            mSudokuPresenter.reset();
+        } else {
+            mSudokuPresenter.updateTips();
+            if (mSudokuPresenter.checkInput()) {
+                Toast.makeText(getContext(), "Suc", Toast.LENGTH_SHORT).show();
+            }
+        }
         postInvalidate();
         return super.onTouchEvent(event);
     }

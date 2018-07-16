@@ -72,4 +72,9 @@ public class GridBean {
             mTipsCount += tip == 0 ? 0 : 1;
         }
     }
+
+    public void clearTips() {
+        Arrays.fill(mTips, 0);
+        mTipsCount = 0;
+    }
 }
