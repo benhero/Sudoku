@@ -43,7 +43,7 @@ public class SudokuPresenter {
     public SudokuPresenter() {
         for (int i = 0; i < mGridBeans.length; i++) {
             GridBean gridBean = new GridBean();
-            int value = mData[i];
+            int value = mData2[i];
             gridBean.setSource(value);
             mGridBeans[i] = gridBean;
         }
@@ -83,8 +83,19 @@ public class SudokuPresenter {
                 updateInput(gridBean);
             }
         }
+
+        for (int i = 0; i < GRID_COUNT; i++) {
+            GridBean gridBean = mGridBeans[i];
+            if (getGridValue(i) == 0) {
+                updateTipsByRectTips(gridBean, i);
+                updateInput(gridBean);
+            }
+        }
     }
 
+    /**
+     * 更新提示：格子
+     */
     private void updateTipsByRect(GridBean gridBean, int x, int y) {
         boolean isChecked = gridBean.getTipsCount() != 0;
         for (int i = 1; i < 10; i++) {
@@ -101,6 +112,9 @@ public class SudokuPresenter {
         gridBean.updateTipsCount();
     }
 
+    /**
+     * 更新提示：列
+     */
     private void updateTipsByColumn(GridBean gridBean, int x, int y) {
         boolean isChecked = gridBean.getTipsCount() != 0;
         for (int i = 1; i < 10; i++) {
@@ -117,6 +131,9 @@ public class SudokuPresenter {
         gridBean.updateTipsCount();
     }
 
+    /**
+     * 更新提示：行
+     */
     private void updateTipsByRow(GridBean gridBean, int x, int y) {
         boolean isChecked = gridBean.getTipsCount() != 0;
         for (int i = 1; i < 10; i++) {
@@ -128,6 +145,38 @@ public class SudokuPresenter {
                 }
             } else {
                 gridBean.setTip(i, show);
+            }
+        }
+        gridBean.updateTipsCount();
+    }
+
+    /**
+     * 根据提示数字在格子中剩下的数字来更新提示数
+     */
+    private void updateTipsByRectTips(GridBean gridBean, int i) {
+        if (gridBean.getTipsCount() == 0) {
+            // 没有提示数字，直接退出
+            return;
+        }
+        GridBean[] rectGrid = getRectGrid(getRectIndex(i));
+        int[] tips = gridBean.getTips();
+        for (int tip : tips) {
+            if (tip == 0) {
+                continue;
+            }
+            boolean isLastOne = true;
+            for (int j = 0; j < 9; j++) {
+                GridBean bean = rectGrid[j];
+                if (bean == gridBean) {
+                    continue;
+                }
+                if (bean.getTips()[tip - 1] != 0) {
+                    isLastOne = false;
+                }
+            }
+            if (isLastOne) {
+                gridBean.setInput(tip);
+                gridBean.clearTips();
             }
         }
         gridBean.updateTipsCount();
@@ -252,10 +301,34 @@ public class SudokuPresenter {
     }
 
     /**
+     * 获取指定索引的矩阵数据
+     */
+    public GridBean[] getRectGrid(int rectIndex) {
+        int startItemX = rectIndex % 3 * 3;
+        int startItemY = rectIndex / 3 * 3;
+        int i = startItemX + startItemY * 9;
+        return new GridBean[]{
+                mGridBeans[i], mGridBeans[i + 1], mGridBeans[i + 2],
+                mGridBeans[i + 9], mGridBeans[i + 10], mGridBeans[i + 11],
+                mGridBeans[i + 18], mGridBeans[i + 19], mGridBeans[i + 20]
+        };
+    }
+
+    /**
      * 获取指定位置所在的矩阵索引
      */
     public int getRectIndex(int x, int y) {
         int i = getDateIndex(x, y);
+        // 在横向上的矩阵坐标
+        int xRectIndex = i % 9 / 3;
+        int yRectIndex = i / 9 / 3;
+        return xRectIndex + yRectIndex * 3;
+    }
+
+    /**
+     * 获取指定位置所在的矩阵索引
+     */
+    public int getRectIndex(int i) {
         // 在横向上的矩阵坐标
         int xRectIndex = i % 9 / 3;
         int yRectIndex = i / 9 / 3;
