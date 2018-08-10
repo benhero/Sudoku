@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * com.ben.sudoku
  *
- * @author chenbenbin
+ * @author Benhero
  * @date 2018/7/12
  */
 public class MainActivity extends Activity {

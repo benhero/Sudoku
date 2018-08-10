@@ -3,7 +3,7 @@ package com.ben.sudoku;
 /**
  * 数独逻辑操作类
  *
- * @author chenbenbin
+ * @author Benhero
  * @date 2018/7/16
  */
 public class SudokuPresenter {
@@ -43,7 +43,7 @@ public class SudokuPresenter {
     public SudokuPresenter() {
         for (int i = 0; i < mGridBeans.length; i++) {
             GridBean gridBean = new GridBean();
-            int value = mData2[i];
+            int value = mData[i];
             gridBean.setSource(value);
             mGridBeans[i] = gridBean;
         }

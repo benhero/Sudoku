@@ -11,7 +11,7 @@ import android.widget.Toast;
 /**
  * 数独视图
  *
- * @author chenbenbin
+ * @author Benhero
  * @date 2018/7/11
  */
 public class SudokuView extends View {

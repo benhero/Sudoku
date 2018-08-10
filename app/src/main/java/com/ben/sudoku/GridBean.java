@@ -5,7 +5,7 @@ import java.util.Arrays;
 /**
  * 单个格子的数据Bean
  *
- * @author chenbenbin
+ * @author Benhero
  * @date 2018/7/16
  */
 public class GridBean {
